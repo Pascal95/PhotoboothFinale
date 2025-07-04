@@ -1,6 +1,6 @@
 import json
 import customtkinter as ctk
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageOps
 import tkinter as tk
 import threading
 import cv2
@@ -370,7 +370,7 @@ class PhotoboothApp:
             window_height = self.root.winfo_height()
             scale = min(window_width / img.width * 0.7, window_height / img.height * 0.7)
             new_size = (int(img.width * scale), int(img.height * scale))
-            img = img.resize(new_size, Image.ANTIALIAS)
+            img = img.resize(new_size, Image.Resampling.LANCZOS)
             # img_width, img_height = img.size
             self.result_imgtk = ImageTk.PhotoImage(img)
             self.camera_label.place_forget()
