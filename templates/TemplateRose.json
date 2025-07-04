@@ -1,0 +1,25 @@
+{
+  "nom": "TemplateRose",
+  "image_fond": "TemplateRose.png",
+  "nombre_photos": 3,
+  "cadres": [
+    {
+      "x": 44,
+      "y": 28,
+      "width": 276,
+      "height": 182
+    },
+    {
+      "x": 44,
+      "y": 224,
+      "width": 276,
+      "height": 182
+    },
+    {
+      "x": 333,
+      "y": 224,
+      "width": 276,
+      "height": 182
+    }
+  ]
+}

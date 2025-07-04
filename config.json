@@ -1,0 +1,21 @@
+{
+  "nombre_photos": 4,
+  "timer_seconds": 5,
+  "template": "TemplateRose",
+  "texte_overlay": "Mariage de Julie & Samir",
+  "impression_auto": false,
+  "nombre_impressions": 1,
+  "duree_session_minutes": 240,
+  "mot_de_passe_admin": "admin123",
+  "login_required": true,
+  "mot_de_passe_utilisateur": "1234",
+  "titre_interface": "Je test le titre",
+  "couleur_principale": "blue",
+  "bg_color": "gray",
+  "font_titre": "Verdana",
+  "couleur_titre": "purple",
+  "logo_path": "/Users/pierre-richardpascal/Downloads/logo-removebg-preview-2.png",
+  "logo_position": "droite",
+  "logo_width": 100,
+  "logo_height": 150
+}

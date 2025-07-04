@@ -1,0 +1,11 @@
+{
+    "nom": "mariage",
+    "image_fond": "TemplateMariage.png",
+    "nombre_photos": 4,
+    "cadres": [
+      { "x": 123, "y": 287, "width": 614, "height": 418 },
+      { "x": 1011, "y": 287, "width": 614, "height": 418 },
+      { "x": 123, "y": 749, "width": 614, "height": 418 },
+      { "x": 1011, "y": 751, "width": 614, "height": 418 }
+    ]
+  }

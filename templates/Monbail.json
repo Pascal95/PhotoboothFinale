@@ -1,0 +1,25 @@
+{
+  "nom": "Monbail",
+  "image_fond": "Monbail.jpg",
+  "nombre_photos": 3,
+  "cadres": [
+    {
+      "x": 39,
+      "y": 39,
+      "width": 409,
+      "height": 272
+    },
+    {
+      "x": 39,
+      "y": 325,
+      "width": 406,
+      "height": 272
+    },
+    {
+      "x": 455,
+      "y": 325,
+      "width": 406,
+      "height": 272
+    }
+  ]
+}
