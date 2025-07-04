@@ -363,6 +363,8 @@ class PhotoboothApp:
     def afficher_preview(self):
         try:
             path = f"exports/{self.nom_fichier}.png"
+            print(f"on ouvre :[{path}]")
+            time.sleep(0.5)
             img = Image.open(path)
             window_width = self.root.winfo_width()
             window_height = self.root.winfo_height()
