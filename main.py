@@ -7,6 +7,7 @@ import cv2
 import time
 import os
 from utils.montage import lancer_seance, set_camera, release_camera, get_frame_with_overlay
+from utils.impression import imprimer_image
 import pygame
 
 class PhotoboothApp:
@@ -394,7 +395,7 @@ class PhotoboothApp:
     def imprimer_resultat(self):
         if self.nom_fichier:
             path = f"exports/{self.nom_fichier}.png"
-            os.system(f"open '{path}'")  # macOS
+            imprimer_image(path)
 
     def get_unique_filename(self, base):
         i = 1
