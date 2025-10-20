@@ -35,6 +35,8 @@ def get_frame_with_overlay(overlay_text=""):
 
 
 def capture_photo():
+    # Pour vérifier le format d'image supporté par l'appareil, utiliser :
+    # gphoto2 --get-config imageformat
     # Unmount volume s'il est monté (optionnel mais préférable)
     subprocess.run([
         "gio", "mount", "-u", "gphoto2://Canon_Inc._Canon_Digital_Camera/"
@@ -51,7 +53,7 @@ def capture_photo():
         time.sleep(2)  # temps pour que le fichier s'enregistre dans la mémoire interne
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"photo_{timestamp}.jpg"
+        filename = f"photo_{timestamp}.png"
 
         subprocess.run([
             "gphoto2",
@@ -60,6 +62,7 @@ def capture_photo():
         ], check=True)
 
         img = Image.open(filename).convert("RGB")
+        img.save(filename, format="PNG")  # Conversion sans perte
         return img
     except Exception as e:
         print(f"Erreur capture : {e}")
@@ -107,7 +110,7 @@ def lancer_seance(template_data, overlay_callback, nom_fichier="resultat"):
             print(f"Aucun cadre défini pour la photo {i+1}, sautée.")
             continue
         cadre = cadres[i]
-        photo_resized = photo.resize((cadre["width"], cadre["height"]))
+        photo_resized = photo.resize((cadre["width"], cadre["height"]), Image.Resampling.LANCZOS)
         template.paste(photo_resized, (cadre["x"], cadre["y"]))
 
     output_path = f"exports/{nom_fichier}.png"

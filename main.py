@@ -14,6 +14,7 @@ class PhotoboothApp:
     def __init__(self, root):
         self.root = root
         self.config = self.load_config()
+        self.button_color = self.config.get("button_color", "#1E90FF")
         self.root.title("Photobooth 💍")
         self.root.geometry("1000x1000")
         self.bg_frame = ctk.CTkFrame(self.root, fg_color=self.config.get("bg_color", "white"))
@@ -64,13 +65,13 @@ class PhotoboothApp:
         self.button_frame = ctk.CTkFrame(self.bg_frame, fg_color="transparent")
         self.button_frame.pack(pady=10)
 
-        self.start_button = ctk.CTkButton(self.button_frame, text="🎬 Lancer la séance photo", command=self.start_session)
+        self.start_button = ctk.CTkButton(self.button_frame, text="🎬 Lancer la séance photo", command=self.start_session, fg_color=self.button_color)
         self.start_button.grid(row=0, column=0, padx=10)
 
-        self.print_button = ctk.CTkButton(self.button_frame, text="🖨️ Imprimer", command=self.imprimer_resultat, state="disabled")
+        self.print_button = ctk.CTkButton(self.button_frame, text="🖨️ Imprimer", command=self.imprimer_resultat, state="disabled", fg_color=self.button_color)
         self.print_button.grid(row=0, column=1, padx=10)
 
-        self.reset_button = ctk.CTkButton(self.button_frame, text="🔁 Nouveau shooting", command=self.reset, state="disabled")
+        self.reset_button = ctk.CTkButton(self.button_frame, text="🔁 Nouveau shooting", command=self.reset, state="disabled", fg_color=self.button_color)
         self.reset_button.grid(row=0, column=2, padx=10)
 
         set_camera()
@@ -81,7 +82,7 @@ class PhotoboothApp:
         self.update_video()
         
     def create_admin_access_point(self):
-        access_btn = ctk.CTkButton(self.button_frame, text="⚙️ Admin", width=80, height=30, command=self.ask_admin_password)
+        access_btn = ctk.CTkButton(self.button_frame, text="⚙️ Admin", width=80, height=30, command=self.ask_admin_password, fg_color=self.button_color)
         access_btn.grid(row=0, column=3, padx=10)
 
     def ask_admin_password(self):
@@ -134,19 +135,17 @@ class PhotoboothApp:
         row += 1
 
         ctk.CTkLabel(admin_win, text="Couleur principale").grid(row=row, column=0, padx=10, pady=5, sticky="e")
-        color_options = ["blue", "green", "dark-blue", "sweetkind", "monokai", "purple"]
-        color_var = ctk.StringVar(value=self.config.get("couleur_principale", "blue"))
-        color_menu = ctk.CTkOptionMenu(admin_win, values=color_options, variable=color_var)
-        color_menu.grid(row=row, column=1, padx=10, pady=5)
-        entries["couleur_principale"] = color_var
+        color_entry = ctk.CTkEntry(admin_win)
+        color_entry.insert(0, self.config.get("couleur_principale", "#0000FF"))
+        color_entry.grid(row=row, column=1, padx=10, pady=5)
+        entries["couleur_principale"] = color_entry
         row += 1
 
         ctk.CTkLabel(admin_win, text="Couleur de fond").grid(row=row, column=0, padx=10, pady=5, sticky="e")
-        bg_color_options = ["white", "lightgray", "gray", "black"]
-        bg_var = ctk.StringVar(value=self.config.get("bg_color", "white"))
-        bg_menu = ctk.CTkOptionMenu(admin_win, values=bg_color_options, variable=bg_var)
-        bg_menu.grid(row=row, column=1, padx=10, pady=5)
-        entries["bg_color"] = bg_var
+        bg_color_entry = ctk.CTkEntry(admin_win)
+        bg_color_entry.insert(0, self.config.get("bg_color", "#FFFFFF"))
+        bg_color_entry.grid(row=row, column=1, padx=10, pady=5)
+        entries["bg_color"] = bg_color_entry
         row += 1
 
         ctk.CTkLabel(admin_win, text="Police du titre").grid(row=row, column=0, padx=10, pady=5, sticky="e")
@@ -158,11 +157,18 @@ class PhotoboothApp:
         row += 1
 
         ctk.CTkLabel(admin_win, text="Couleur du titre").grid(row=row, column=0, padx=10, pady=5, sticky="e")
-        color_font_options = ["black", "white", "blue", "red", "green", "orange", "purple"]
-        color_font_var = ctk.StringVar(value=self.config.get("couleur_titre", "black"))
-        color_font_menu = ctk.CTkOptionMenu(admin_win, values=color_font_options, variable=color_font_var)
-        color_font_menu.grid(row=row, column=1, padx=10, pady=5)
-        entries["couleur_titre"] = color_font_var
+        color_font_entry = ctk.CTkEntry(admin_win)
+        color_font_entry.insert(0, self.config.get("couleur_titre", "#000000"))
+        color_font_entry.grid(row=row, column=1, padx=10, pady=5)
+        entries["couleur_titre"] = color_font_entry
+        row += 1
+
+        # Ajout du champ couleur des boutons juste après "couleur_titre"
+        ctk.CTkLabel(admin_win, text="Couleur des boutons").grid(row=row, column=0, padx=10, pady=5, sticky="e")
+        button_color_entry = ctk.CTkEntry(admin_win)
+        button_color_entry.insert(0, self.config.get("button_color", "#1E90FF"))
+        button_color_entry.grid(row=row, column=1, padx=10, pady=5)
+        entries["button_color"] = button_color_entry
         row += 1
 
         # --- Logo selection and positioning ---
@@ -349,7 +355,11 @@ class PhotoboothApp:
         template_name = self.config.get("template", "mariage")
         self.nom_fichier = self.get_unique_filename(template_name)
         template_data = self.load_template(template_name)
+        # Afficher le loader centré
+        loader_label = ctk.CTkLabel(self.root, text="📸 Traitement en cours...", font=("Arial", 24), text_color="black")
+        loader_label.place(relx=0.5, rely=0.5, anchor="center")
         lancer_seance(template_data, self.set_overlay, self.nom_fichier)
+        loader_label.destroy()
         self.afficher_preview()
         self.print_button.configure(state="normal")
         self.reset_button.configure(state="normal")
