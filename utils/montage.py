@@ -9,6 +9,21 @@ from datetime import datetime
 
 camera = None
 
+def resize_and_crop(img, target_width, target_height):
+    img_ratio = img.width / img.height
+    target_ratio = target_width / target_height
+
+    if img_ratio > target_ratio:
+        new_width = int(img.height * target_ratio)
+        offset = (img.width - new_width) // 2
+        img = img.crop((offset, 0, offset + new_width, img.height))
+    else:
+        new_height = int(img.width / target_ratio)
+        offset = (img.height - new_height) // 2
+        img = img.crop((0, offset, img.width, offset + new_height))
+
+    return img.resize((target_width, target_height), Image.Resampling.LANCZOS)
+
 def set_camera():
     global camera
     camera = cv2.VideoCapture(0)  # Logitech webcam (assume /dev/video0 ou index 0)
@@ -30,7 +45,10 @@ def get_frame_with_overlay(overlay_text=""):
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     if overlay_text:
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(frame, overlay_text, (200, 100), font, 3, (255, 255, 255), 5, cv2.LINE_AA)
+        if overlay_text == "traitement":
+            cv2.putText(frame, "Traitement en cours...", (200, 100), font, 2, (255, 255, 255), 4, cv2.LINE_AA)
+        else:
+            cv2.putText(frame, overlay_text, (200, 100), font, 3, (255, 255, 255), 5, cv2.LINE_AA)
     return frame
 
 
@@ -91,7 +109,7 @@ def lancer_seance(template_data, overlay_callback, nom_fichier="resultat"):
             time.sleep(1)
         overlay_callback("__flash__")
         time.sleep(0.15)
-        overlay_callback("")
+        overlay_callback("traitement")
         try:
             son_photo.play()
         except:
@@ -110,7 +128,7 @@ def lancer_seance(template_data, overlay_callback, nom_fichier="resultat"):
             print(f"Aucun cadre défini pour la photo {i+1}, sautée.")
             continue
         cadre = cadres[i]
-        photo_resized = photo.resize((cadre["width"], cadre["height"]), Image.Resampling.LANCZOS)
+        photo_resized = resize_and_crop(photo, cadre["width"], cadre["height"])
         template.paste(photo_resized, (cadre["x"], cadre["y"]))
 
     output_path = f"exports/{nom_fichier}.png"
