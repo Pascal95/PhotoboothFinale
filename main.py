@@ -79,6 +79,11 @@ class PhotoboothApp:
         self.overlay_text = ""
         self.nom_fichier = ""
         self.result_imgtk = None
+        # Ajouts pour gestion after et loader/flash
+        self.video_loop_id = None
+        self.flash_after_id = None
+        self.flash_label = None
+        self.loader_label = ctk.CTkLabel(self.bg_frame, text="🌀 Traitement en cours...", font=("Arial", 22), fg_color="transparent")
         self.create_admin_access_point()
         self.update_video()
         
@@ -340,7 +345,7 @@ class PhotoboothApp:
             imgtk = ImageTk.PhotoImage(image=img)
             self.camera_label.configure(image=imgtk)
             self.camera_label.imgtk = imgtk
-        self.root.after(30, self.update_video)
+        self.video_loop_id = self.root.after(30, self.update_video)
 
     def start_session(self):
         self.start_button.configure(state="disabled")
@@ -357,9 +362,9 @@ class PhotoboothApp:
         self.nom_fichier = self.get_unique_filename(template_name)
         template_data = self.load_template(template_name)
         # Afficher le loader centré
-        loader_label.place(relx=0.5, rely=0.5, anchor="center")
+        self.loader_label.place(relx=0.5, rely=0.5, anchor="center")
         lancer_seance(template_data, self.set_overlay, self.nom_fichier)
-        loader_label.destroy()
+        self.loader_label.place_forget()
         self.afficher_preview()
         self.print_button.configure(state="normal")
         self.reset_button.configure(state="normal")
@@ -367,9 +372,17 @@ class PhotoboothApp:
     def set_overlay(self, text):
         self.overlay_text = text
         if text == "__flash__":
-            flash = ctk.CTkLabel(self.root, text="", width=self.root.winfo_width(), height=self.root.winfo_height(), fg_color="white")
-            flash.place(relx=0.5, rely=0.5, anchor="center")
-            self.root.after(150, flash.destroy)
+            if self.flash_label:
+                self.flash_label.destroy()
+            self.flash_label = ctk.CTkLabel(self.bg_frame, text="", width=self.root.winfo_width(), height=self.root.winfo_height(), fg_color="white")
+            self.flash_label.place(relx=0.5, rely=0.5, anchor="center")
+            self.flash_after_id = self.root.after(150, self._destroy_flash)
+
+    def _destroy_flash(self):
+        if self.flash_label:
+            self.flash_label.destroy()
+            self.flash_label = None
+        self.flash_after_id = None
 
     def afficher_preview(self):
         try:
@@ -415,6 +428,10 @@ class PhotoboothApp:
 
     def on_closing(self):
         release_camera()
+        if self.video_loop_id is not None:
+            self.root.after_cancel(self.video_loop_id)
+        if self.flash_after_id is not None:
+            self.root.after_cancel(self.flash_after_id)
         self.root.destroy()
 
     def fade_in(self, widget, step=0):
