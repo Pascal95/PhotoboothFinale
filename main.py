@@ -17,8 +17,8 @@ class PhotoboothApp:
         self.button_color = self.config.get("button_color", "#1E90FF")
         self.root.title("Photobooth 💍")
         self.root.geometry("1000x1000")
-        self.root.configure(fg_color=self.config.get("bg_color", "#F0F0F0"))
-        self.bg_frame = ctk.CTkFrame(self.root, fg_color="transparent")
+        self.root.configure(bg=self.config.get("bg_color", "#F0F0F0"))
+        self.bg_frame = ctk.CTkFrame(self.root, fg_color="transparent", bg_color="transparent")
         self.bg_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
 
         pygame.mixer.init()
