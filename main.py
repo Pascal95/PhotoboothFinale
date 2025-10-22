@@ -18,9 +18,8 @@ class PhotoboothApp:
         self.root.title("Photobooth 💍")
         self.root.geometry("1000x1000")
         self.root.configure(fg_color=self.config.get("bg_color", "#F0F0F0"))
-        self.bg_frame = ctk.CTkFrame(self.root, fg_color=self.config.get("bg_color", "#F0F0F0"))
-        self.bg_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
-        self.bg_frame.lower()
+        self.bg_frame = ctk.CTkFrame(self.root, fg_color=self.config.get("bg_color", "#F0F0F0"), corner_radius=0)
+        self.bg_frame.pack(fill="both", expand=True)
 
         pygame.mixer.init()
         self.son_bip = pygame.mixer.Sound("assets/bip.mp3")
@@ -38,14 +37,14 @@ class PhotoboothApp:
         )
         self.title_label.pack(pady=(20, 5))
 
-        self.camera_label = ctk.CTkLabel(self.root, text="", fg_color="transparent")
+        self.camera_label = ctk.CTkLabel(self.bg_frame, text="", fg_color="transparent")
         self.camera_label.place(relx=0.5, y=120, anchor="n")
 
-        self.preview_label = ctk.CTkLabel(self.root, text="", fg_color="transparent")
+        self.preview_label = ctk.CTkLabel(self.bg_frame, text="", fg_color="transparent")
         self.preview_label.place_forget()
 
         # Logo label
-        self.logo_label = ctk.CTkLabel(self.root, text="", fg_color="transparent")
+        self.logo_label = ctk.CTkLabel(self.bg_frame, text="", fg_color="transparent")
         self.logo_label.place_forget()
 
         logo_path = self.config.get("logo_path")
