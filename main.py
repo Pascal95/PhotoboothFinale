@@ -428,10 +428,19 @@ class PhotoboothApp:
 
     def on_closing(self):
         release_camera()
-        if self.video_loop_id is not None:
+        # Safely cancel all after events and destroy loader label
+        try:
             self.root.after_cancel(self.video_loop_id)
-        if self.flash_after_id is not None:
+        except:
+            pass
+        try:
             self.root.after_cancel(self.flash_after_id)
+        except:
+            pass
+        try:
+            self.loader_label.destroy()
+        except:
+            pass
         self.root.destroy()
 
     def fade_in(self, widget, step=0):
@@ -439,7 +448,8 @@ class PhotoboothApp:
             return
         alpha = int(255 * (step / 10))
         widget.configure(fg_color=(0, 0, 0, alpha))  # simuler un fondu si possible
-        self.root.after(30, lambda: self.fade_in(widget, step + 1))
+        if widget.winfo_exists():
+            self.root.after(30, lambda: self.fade_in(widget, step + 1))
 
     def load_config(self):
         try:
