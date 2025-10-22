@@ -17,7 +17,8 @@ class PhotoboothApp:
         self.button_color = self.config.get("button_color", "#1E90FF")
         self.root.title("Photobooth 💍")
         self.root.geometry("1000x1000")
-        self.bg_frame = ctk.CTkFrame(self.root, fg_color=self.config.get("bg_color", "white"))
+        self.root.configure(fg_color=self.config.get("bg_color", "#F0F0F0"))
+        self.bg_frame = ctk.CTkFrame(self.root, fg_color="transparent")
         self.bg_frame.place(relx=0, rely=0, relwidth=1, relheight=1)
 
         pygame.mixer.init()
@@ -36,10 +37,10 @@ class PhotoboothApp:
         )
         self.title_label.pack(pady=(20, 5))
 
-        self.camera_label = ctk.CTkLabel(self.root, text="")
+        self.camera_label = ctk.CTkLabel(self.root, text="", fg_color="transparent")
         self.camera_label.place(relx=0.5, y=120, anchor="n")
 
-        self.preview_label = ctk.CTkLabel(self.root, text="")
+        self.preview_label = ctk.CTkLabel(self.root, text="", fg_color="transparent")
         self.preview_label.place_forget()
 
         # Logo label
@@ -65,13 +66,13 @@ class PhotoboothApp:
         self.button_frame = ctk.CTkFrame(self.bg_frame, fg_color="transparent")
         self.button_frame.pack(pady=10)
 
-        self.start_button = ctk.CTkButton(self.button_frame, text="🎬 Lancer la séance photo", command=self.start_session, fg_color=self.button_color)
+        self.start_button = ctk.CTkButton(self.button_frame, text="🎬 Lancer la séance photo", command=self.start_session, fg_color=self.button_color, text_color="white")
         self.start_button.grid(row=0, column=0, padx=10)
 
-        self.print_button = ctk.CTkButton(self.button_frame, text="🖨️ Imprimer", command=self.imprimer_resultat, state="disabled", fg_color=self.button_color)
+        self.print_button = ctk.CTkButton(self.button_frame, text="🖨️ Imprimer", command=self.imprimer_resultat, state="disabled", fg_color=self.button_color, text_color="white")
         self.print_button.grid(row=0, column=1, padx=10)
 
-        self.reset_button = ctk.CTkButton(self.button_frame, text="🔁 Nouveau shooting", command=self.reset, state="disabled", fg_color=self.button_color)
+        self.reset_button = ctk.CTkButton(self.button_frame, text="🔁 Nouveau shooting", command=self.reset, state="disabled", fg_color=self.button_color, text_color="white")
         self.reset_button.grid(row=0, column=2, padx=10)
 
         set_camera()
@@ -82,7 +83,7 @@ class PhotoboothApp:
         self.update_video()
         
     def create_admin_access_point(self):
-        access_btn = ctk.CTkButton(self.button_frame, text="⚙️ Admin", width=80, height=30, command=self.ask_admin_password, fg_color=self.button_color)
+        access_btn = ctk.CTkButton(self.button_frame, text="⚙️ Admin", width=80, height=30, command=self.ask_admin_password, fg_color=self.button_color, text_color="white")
         access_btn.grid(row=0, column=3, padx=10)
 
     def ask_admin_password(self):
@@ -356,7 +357,6 @@ class PhotoboothApp:
         self.nom_fichier = self.get_unique_filename(template_name)
         template_data = self.load_template(template_name)
         # Afficher le loader centré
-        loader_label = ctk.CTkLabel(self.root, text="📸 Traitement en cours...", font=("Arial", 24), text_color="black")
         loader_label.place(relx=0.5, rely=0.5, anchor="center")
         lancer_seance(template_data, self.set_overlay, self.nom_fichier)
         loader_label.destroy()
